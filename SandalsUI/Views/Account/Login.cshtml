@@ -1,0 +1,86 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/css/bootstrap-material-design.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+    <link rel="stylesheet" href="~/fontawesome/css/all.css" />
+    <title>Sandals Order Manager -Login</title>
+</head>
+<body>
+    <div class="top-content">
+        <img class="logo" alt="Logo" />
+        <p class="app-version">app version: v1.0.0</p>
+    </div>
+    <div class="container container-overrides">
+        <div class="main">
+            <div class="login-form-container">
+                <div class="messages-container">
+                    <i class="fas fa-times close"></i>
+                    <h6>Request error</h6>
+                    <div class="message-content">
+                        <p>Could not fullfil your request. Message detail: <span class="message-detail"></span></p>
+                    </div>
+                </div>
+                <div class="login-content">
+                    <h1 class="display-4 login-header">Sign in</h1>
+                    <p class="sub-header">Welcome to Sandals <b>Order Manager</b>. <br />Login to view orders, manage your inventory and more</p>
+
+                    <div class="controls">
+                        <div class="igroup" style="margin-top: 35px;">
+                            <i class="fas fa-user-secret"></i>
+                            <input type="text" class="form-control" id="username" placeholder="Username" required="" style="cursor: auto;">
+                        </div>
+                        <div class="igroup" style=" margin-top: 15px;">
+                            <i class="fas fa-key"></i>
+                            <input type="password" class="form-control" id="password" placeholder="Password" required="" style="cursor: auto;">
+                        </div>
+                        <button class="btn btn-primary btn-sm btn-login" type="submit" style="margin-top: 15px;">Sign In</button>
+                    </div>
+                </div>
+            </div>
+            <a style="margin-top:10px; font-size:12px; text-decoration:underline;" href="/admin/dashboard" class="btn btn-link">Forgot your password?</a>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/popper.js"></script>
+    <script src="~/js/bootstrap-material-design.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".close").click(function () {
+                $(".messages-container").css({ "display": "none"});
+            });
+
+            $(".btn-login").click(function () {
+                var button = $(this);
+                $(button).html('<img src="/images/loading.svg"/>');
+
+                $.ajax({
+                    url: "/account/login",
+                    method: "POST",
+                    contentType: "application/json charset=utf-8",
+                    data: JSON.stringify({ username: $("#username").val(), password: $("#password").val()}),
+                    success: function (result) {
+                        console.log(result);
+                        window.location.href = "/admin";
+                    },
+                    error: function (result) {
+                        $(".message-detail").html(result.responseText);
+                        $(".messages-container").css({ "display": "block" });
+                        console.log(result);
+                        $(button).html('Sign In');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

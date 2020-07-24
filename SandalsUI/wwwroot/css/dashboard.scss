@@ -1,0 +1,141 @@
+﻿$primaryColor: #376ed9;
+
+.sales-data-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.sales-header{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items:center;
+}
+
+.sales-totals{
+    display: flex;
+    flex-direction:column;
+}
+
+.general-lbl {
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+    font-weight: bold;
+    border: 1px solid;
+    padding: 2px;
+    font-style: italic;
+    margin-right: auto;
+    background-color: #848484;
+}
+
+.sales-total {
+    font-weight: bold;
+    color: #505050;
+    font-size: 23px;
+    vertical-align: middle;
+    justify-self: center;
+    position: relative;
+}
+
+.previous-period{
+    font-size: 13px;
+    font-style: italic;
+}
+
+.trend {
+    margin-right: 7px;
+}
+
+.trend-positive {
+    color: #1cb636 !important;
+}
+
+.trend-negative {
+    color: #d03464 !important;
+}
+
+.trend-neutral {
+    color: #b0b0b0 !important;
+}
+
+.prev-total {
+    background-color: #e8e8e8;
+    padding: 2px;
+    border-radius: 2px;
+    text-decoration: underline;
+}
+
+#year-selector{
+    width: auto;
+    padding: 5px;
+    margin-left: auto;
+}
+
+.sales-chart-container{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.sales-chart-container .ct-series-a .ct-bar {
+    stroke: #4e4e4e;
+    stroke-width: 15px;
+}
+
+.statisitcs-container{
+    width: 100%;
+    display: flex;
+    justify-content:center;
+    justify-items:center;
+    margin-bottom: 15px;
+}
+
+.statistic {
+    display: flex;
+    padding: 10px;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.08);
+    flex: 1;
+    border: 1px solid #dadada;
+    margin: 5px;
+}
+
+.stat-ic {
+    font-size: 25px;
+    color: #5d5d5d;
+}
+
+.stat-ic-container {
+    border-radius: 18px;
+    padding: 13px;
+}
+
+.stat-values{
+    display:flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.stat-values p {
+    font-size: 15px;
+    color: #989898;
+    margin-bottom: 0px;
+}
+
+.stat-values h6 {
+    font-size: 25px;
+    font-weight: bold;
+    color: #636363;
+}
+
+.all-orders-link{
+    color: red;
+    font-size: 12px;
+    font-style: italic;
+}
+

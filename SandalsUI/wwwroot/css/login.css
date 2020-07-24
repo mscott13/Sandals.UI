@@ -1,0 +1,142 @@
+﻿html {
+    background: url("/images/login-bg.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+}
+
+body {
+    background-color: transparent;
+}
+
+.login-form-container {
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 0px 35px -13px rgba(0,0,0,0.16);
+    border-radius: 10px;
+    border: 2px dashed #6b6b6b;
+    position: relative;
+    overflow: hidden;
+    transition: all .2s;
+}
+
+.login-content {
+    padding: 10px;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    transition: all .2s;
+}
+
+.messages-container {
+    z-index: 10;
+    width: 100%;
+    background: white;
+    padding: 10px;
+    position: relative;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14);
+    display:none;
+    transition: all .2s;
+}
+
+    .messages-container .close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+.message-content p {
+    margin-bottom: 0px;
+    font-size: 14px;
+}
+
+.messages-container h6 {
+    font-weight: bold;
+}
+
+.message-detail {
+    background-color: rgb(221,221,221);
+    border-radius: 3px;
+    padding: 2px;
+}
+
+.top-content {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    right: 0;
+    top: 0;
+}
+
+    .top-content .logo {
+        margin-right: auto;
+    }
+
+    .top-content .app-version {
+        margin-left: auto;
+        font-size: 13px;
+        font-style: italic;
+    }
+
+.login-header {
+    color: #434343;
+}
+
+.sub-header {
+    color: #545454;
+    font-size: 15px;
+    text-align: center;
+}
+
+.controls {
+    width: 380px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+.igroup {
+    display: flex;
+    align-content: center;
+    align-items: center;
+}
+
+    .igroup i {
+        flex: 0;
+        margin-right: 10px;
+        color: #434343;
+    }
+
+    .igroup input {
+        flex: 1 1 auto;
+    }
+
+.container-overrides {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    height: 80vh;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-login {
+    transition: all .2s;
+    height: 35px;
+    padding: 0px !important;
+}
+
+    .btn-login img {
+        width: 40px;
+        margin-top: -2px;
+    }
