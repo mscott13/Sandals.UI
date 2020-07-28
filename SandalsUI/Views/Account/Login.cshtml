@@ -56,7 +56,15 @@
     <script>
         $(document).ready(function () {
             $(".close").click(function () {
-                $(".messages-container").css({ "display": "none"});
+                $(".messages-container").removeClass("msg-visible");
+            });
+
+            $("input").on("keydown", function (event) {
+                if (event.which == 13)
+                {
+                    $(".btn-login").trigger("click");
+                }
+                $(".messages-container").removeClass("msg-visible");
             });
 
             $(".btn-login").click(function () {
@@ -74,9 +82,10 @@
                     },
                     error: function (result) {
                         $(".message-detail").html(result.responseText);
-                        $(".messages-container").css({ "display": "block" });
+                        $(".messages-container").addClass("msg-visible");
                         console.log(result);
                         $(button).html('Sign In');
+                        $("#password").val("");
                     }
                 });
             });

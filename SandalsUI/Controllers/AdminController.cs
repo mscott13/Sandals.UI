@@ -20,7 +20,7 @@ namespace SandalsUI.Controllers
         public async Task<IActionResult> Dashboard()
         {
             Models.Dashboard result = await Data();
-            return View(null);
+            return View(result);
         }
 
         [HttpGet]

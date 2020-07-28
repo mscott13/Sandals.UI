@@ -62,7 +62,8 @@
 
 .sales-chart-container {
   width: 100%;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  position: relative; }
 
 .sales-chart-container .ct-series-a .ct-bar {
   stroke: #4e4e4e;
