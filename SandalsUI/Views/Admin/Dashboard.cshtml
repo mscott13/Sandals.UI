@@ -100,7 +100,7 @@
                         </div>
                         <div class="controls">
                             <i class="fas fa-edit edit-order"></i>
-                            <i class="fas fa-ellipsis-h view-details"></i>
+                            <i class="fas fa-ellipsis-h download-images"></i>
                         </div>
                     </div>
                     <div class="order-content">
@@ -134,20 +134,22 @@ else
         <div class="sales-header">
             <div class="sales-totals">
                 <p class="general-lbl">Total Sales</p>
-                <h5 class="sales-total">@Model.thisMonthTotal.ToString("C0")  <span class="this-month">(This Month)</span></h5>
-                <p class="previous-period">Previous period: <span class="prev-total">$0.00</span> <span class="trend trend-neutral"><i class="fas fa-dot-circle"></i>$0.00</span></p>
+                <h5 class="sales-total">@Model.thisMonthTotal.ToString("C2")  <span class="this-month">(This Month)</span></h5>
+                <p class="previous-period">
+                    Previous period: <span class="prev-total">@Model.prevMonthTotal.ToString("C2")</span> @if (Model.difference < 0)
+                    {<span class="trend trend-negative"><i class="fas fa-long-arrow-alt-down"></i>@Model.difference</span> }
+                else if (Model.difference > 0)
+                {<span class="trend trend-positive"><i class="fas fa-long-arrow-alt-up"></i>@Model.difference</span>}
+            else
+            { <span class="trend trend-neutral"><i class="far fa-dot-circle"></i>@Model.difference</span>}
+                </p>
             </div>
             <select disabled class="form-control" id="year-selector">
                 <option selected>This Year</option>
                 <option>Last Year</option>
             </select>
         </div>
-        <div data-dt-status="unavailable" class="sales-chart-container">
-            <div class="data-unavailable-overlay">
-                <img src="~/images/risk.svg" />
-                <h5>No data</h5>
-                <p>Chart data not available at this time...</p>
-            </div>
+        <div data-dt-status="available" class="sales-chart-container" @foreach (var month in Model.monthlyTotals) { @String.Format("data-" + month.ElementAt(0).Key.ToLower() + "=" + month.ElementAt(0).Value + " ") ; }>
             <div class="ct-chart ct-double-octave sales"></div>
         </div>
         <p class="general-lbl">General Statistics</p>
@@ -158,7 +160,7 @@ else
                 </div>
                 <div class="stat-values">
                     <p>Registered Users</p>
-                    <h6>No data</h6>
+                    <h6>@Model.generalStatistics["reg_users"]</h6>
                 </div>
             </div>
             <div class="statistic stat-open-order">
@@ -167,7 +169,7 @@ else
                 </div>
                 <div class="stat-values">
                     <p>Open Orders</p>
-                    <h6>No data</h6>
+                    <h6>@Model.generalStatistics["open_orders"]</h6>
                 </div>
             </div>
             <div class="statistic stat-processing-order">
@@ -176,7 +178,7 @@ else
                 </div>
                 <div class="stat-values">
                     <p>In Processing</p>
-                    <h6>No data</h6>
+                    <h6>@Model.generalStatistics["processing"]</h6>
                 </div>
             </div>
             <div class="statistic stat-processed-order">
@@ -185,74 +187,111 @@ else
                 </div>
                 <div class="stat-values">
                     <p>Processed</p>
-                    <h6>No data</h6>
+                    <h6>@Model.generalStatistics["processed"]</h6>
                 </div>
             </div>
         </div>
         <p class="general-lbl" style="margin-bottom: 0px;">Recent Orders</p>@*<a class="all-orders-link" href="#">view all orders</a>*@
-        <div class="order-container">
-            @*<div class="order-item">
-                    <div class="order-header">
-                        <div class="order-status-strip order-strip-status-processing">
-                            <p>PROCESSING</p>
+        @if (Model.orders != null && Model.orders.Count > 0)
+        {
+            <div class="order-container">
+                @foreach (var order in Model.orders)
+                {
+                    <div class="order-item">
+                        <div class="order-header" data-order-status="@order.orderStatus">
+                            @if (order.orderStatus == SandalsUI.Other.Constants.ORDER_STATUS_OPEN)
+                            {
+                                <div class="order-status-strip order-strip-status-open">
+                                    <p>@SandalsUI.Other.Constants.ORDER_STATUS_OPEN</p>
+                                </div>
+                            }
+                            else if (order.orderStatus == SandalsUI.Other.Constants.ORDER_STATUS_PROCESSING)
+                            {
+                                <div class="order-status-strip order-strip-status-processing">
+                                    <p>@SandalsUI.Other.Constants.ORDER_STATUS_PROCESSING</p>
+                                </div>
+                            }
+                            else if (order.orderStatus == SandalsUI.Other.Constants.ORDER_STATUS_PROCESSED)
+                            {
+                                <div class="order-status-strip order-strip-status-processed">
+                                    <p>@SandalsUI.Other.Constants.ORDER_STATUS_OPEN</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="order-status-strip">
+                                    <p>@order.orderStatus/p>
+                                </div>
+                            }
+
+                            <div class="customer-info">
+                                <p>@String.Format(order.user.firstName + " " + @order.user.lastName)</p>
+                                <p>@order.user.email</p>
+                                <p>@order.user.phone</p>
+                            </div>
+                            <div class="order-summary">
+                                <div class="order-section">
+                                    <h5>Order #</h5>
+                                    <p>@order.orderMainId</p>
+                                </div>
+                                <div class="order-section">
+                                    <h5>Order Date</h5>
+                                    <p>@order.createdDate.ToShortDateString()</p>
+                                </div>
+                                <div class="order-section">
+                                    <h5>Items Count</h5>
+                                    <p>@order.orderDetails.Count</p>
+                                </div>
+                                <div class="order-section">
+                                    <h5>Total</h5>
+                                    <p>@order.total.ToString("C2")</p>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <i class="fas fa-edit edit-order" data-orderid="@order.orderMainId"></i>
+                                <a data-toggle="tooltip" data-placement="top" title="Download images uploaded for this order." href="@String.Format($"/admin/order/uploads/{order.orderMainId}")"><i class="fas fa-download download-images"></i></a>
+                            </div>
                         </div>
-                        <div class="customer-info">
-                            <p>Mark Scott</p>
-                            <p>a.markscott13@gmail.com</p>
-                            <p>(876) 542-4690</p>
-                        </div>
-                        <div class="order-summary">
-                            <div class="order-section">
-                                <h5>Order #</h5>
-                                <p>5401</p>
+                        <div class="order-content">
+                            <p class="items-header">Items</p>
+                            <div class="order-details-container">
+                                @foreach (var detail in order.orderDetails)
+                                {
+                                    <div class="order-detail-item">
+                                        <div class="product-img-wrapper">
+                                            <img alt="Product Image" src="@String.Format(SandalsUI.Other.Constants.API_BASE_URL+$"image/product/{detail.productId}")" />
+                                        </div>
+                                        <div class="order-info">
+                                            <h5>@detail.productDescription</h5>
+                                            <p class="retail-price">@detail.retailPrice.ToString("C2")</p>
+                                            <p>Quantity: <span class="quantity">@detail.quantity</span></p>
+                                        </div>
+                                        <div class="order-total">
+                                            <h5>Total</h5>
+                                            <p>@String.Format((detail.retailPrice * detail.quantity).ToString("C2"))</p>
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                            <div class="order-section">
-                                <h5>Order Date</h5>
-                                <p>July 15, 2020</p>
-                            </div>
-                            <div class="order-section">
-                                <h5>Items Count</h5>
-                                <p>2</p>
-                            </div>
-                            <div class="order-section">
-                                <h5>Total</h5>
-                                <p>$3,250.00</p>
-                            </div>
-                        </div>
-                        <div class="controls">
-                            <i class="fas fa-edit edit-order"></i>
-                            <i class="fas fa-ellipsis-h view-details"></i>
                         </div>
                     </div>
-                    <div class="order-content">
-                        <p class="items-header">Items</p>
-                        <div class="order-details-container">
-                            <div class="order-detail-item">
-                                <div class="product-img-wrapper">
-                                    <img alt="Product Image" src="~/images/no_product.jpg" />
-                                </div>
-                                <div class="order-info">
-                                    <h5>Sandals Type 1 Small</h5>
-                                    <p class="retail-price">$3,500.00</p>
-                                    <p>Quantity: <span class="quantity">12</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>*@
-        </div>
-        <div class="no-order">
-            <img src="~/images/no_order.svg" />
-            <h5>No recent orders</h5>
-            <p>No recent orders have been found.</p>
-            <button type="button" class="btn btn-primary"><u>View</u> all orders</button>
-        </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-order">
+                <img src="~/images/no_order.svg" />
+                <h5>No recent orders</h5>
+                <p>No recent orders have been found.</p>
+                <button type="button" class="btn btn-primary"><u>View</u> all orders</button>
+            </div>
+        }
+
     </div>
 }
 
 @section Scripts{
-    <script src="http://localhost:9693/public/lib/microsoft/signalr/dist/signalr.js"></script>
-    <script src="~/js/signalr.notifications.js"></script>
     <script>
         $(document).ready(function () {
             function InitEmptySalesChart(jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec) {
@@ -280,8 +319,77 @@ else
                 new Chartist.Bar('.ct-chart.sales', data, options, responsiveOptions);
             }
 
+            function InitSalesChart(jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec) {
+                var data = {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    series: [
+                        [
+                            { meta: 'Total (Jan)', value: jan },
+                            { meta: 'Total (Feb)', value: feb },
+                            { meta: 'Total (Mar)', value: mar },
+                            { meta: 'Total (Apr)', value: apr },
+                            { meta: 'Total (May)', value: may },
+                            { meta: 'Total (Jun)', value: jun },
+                            { meta: 'Total (Jul)', value: jul },
+                            { meta: 'Total (Aug)', value: aug },
+                            { meta: 'Total (Sep)', value: sep },
+                            { meta: 'Total (Oct)', value: oct },
+                            { meta: 'Total (Nov)', value: nov },
+                            { meta: 'Total (Dec)', value: dec }
+                        ]
+                    ]
+                };
+
+                var defaultOptions = {
+                    currency: '$'
+                };
+
+                var max = Math.max(jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec);
+                max += 2500;
+
+                var options = {
+                    seriesBarDistance: 10,
+                    high: max,
+                    plugins: [
+                        Chartist.plugins.tooltip(defaultOptions),
+                        Chartist.plugins.ctAxisTitle({
+                            axisX: {
+                                axisTitle: 'Time (mins)',
+                                axisClass: 'ct-axis-title',
+                                offset: {
+                                    x: 0,
+                                    y: 20
+                                },
+                                textAnchor: 'middle'
+                            }
+                        })
+                    ]
+                };
+
+                var responsiveOptions = [
+                    ['screen and (max-width: 640px)', {
+                        seriesBarDistance: 5,
+                        axisX: {
+                            labelInterpolationFnc: function (value) {
+                                return value[0];
+                            }
+                        }
+                    }]
+                ];
+                new Chartist.Bar('.ct-chart.sales', data, options, responsiveOptions);
+            }
+
             if ($(".sales-chart-container").data("dt-status") == "unavailable") {
                 InitEmptySalesChart(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            }
+            else {
+                var jan = $(".sales-chart-container").data("jan"); var jul = $(".sales-chart-container").data("jul");
+                var feb = $(".sales-chart-container").data("feb"); var aug = $(".sales-chart-container").data("aug");
+                var mar = $(".sales-chart-container").data("mar"); var sep = $(".sales-chart-container").data("sep");
+                var apr = $(".sales-chart-container").data("apr"); var oct = $(".sales-chart-container").data("oct");
+                var may = $(".sales-chart-container").data("may"); var nov = $(".sales-chart-container").data("nov");
+                var jun = $(".sales-chart-container").data("jun"); var dec = $(".sales-chart-container").data("dec");
+                InitSalesChart(jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec);
             }
         });
     </script>

@@ -1,8 +1,11 @@
 ﻿"use strict";
+/// <reference path="site.js" />
 
-var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:9693/hub").build();
-connection.on("ReceiveMessage", function (user, message) {
-    alert(message);
-});
+$(document).ready(function () {
+    var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:9693/hub").withAutomaticReconnect().build();
 
-connection.start();
+    connection.on("ReceiveMessage", function (message) {
+        SetSystemMessage(message, "neutral");
+    });
+    connection.start();
+})
